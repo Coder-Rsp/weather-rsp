@@ -173,8 +173,8 @@
 
                     <ImageView
                         android:id="@+id/pm2_5_img"
-                        android:layout_width="48dp"
-                        android:layout_height="69dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="5dp"
                         android:src="@drawable/biz_plugin_weather_0_50" />
                 </LinearLayout>
@@ -204,8 +204,8 @@
                 <!--天气情况图片-->
                 <ImageView
                     android:id="@+id/weather_img"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:adjustViewBounds="true"
                     android:src="@drawable/biz_plugin_weather_qing" />

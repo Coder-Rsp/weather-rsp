@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private ImageView mUpdateBtn;
     private TextView cityTv, timeTv, humidityTv, weekTv, pmDataTv,
-            pmQualityTv, temperatureTv, climateTv, windTv, city_name_Tv;
+            pmQualityTv, temperatureTv, climateTv, windTv, city_name_Tv,temperature_nowTv;
     private ImageView weatherImg, pmImg;
     private ImageView mCitySelect;
 
@@ -67,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         climateTv = (TextView) findViewById(R.id.climate);
         windTv = (TextView) findViewById(R.id.wind);
         weatherImg = (ImageView) findViewById(R.id.weather_img);
+        temperature_nowTv = (TextView) findViewById(R.id.temperature_now);
+
 
         city_name_Tv.setText("N/A");
         cityTv.setText("N/A");
@@ -78,13 +80,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         temperatureTv.setText("N/A");
         climateTv.setText("N/A");
         windTv.setText("N/A");
+        temperature_nowTv.setText("N/A");
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.d("MyApp","MainActivity->oncreate");
+        Log.d("MyApp", "MainActivity->oncreate");
 
         setContentView(R.layout.weather_info);
 
@@ -234,9 +237,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     todayWeather = parseXMl(responseStr);
                     if (todayWeather != null) {
                         Log.d("myWeather", todayWeather.toString());
-                        Message msg =new Message();
+                        Message msg = new Message();
                         msg.what = UPDATE_TODAY_WEATHER;
-                        msg.obj=todayWeather;
+                        msg.obj = todayWeather;
                         mHandler.sendMessage(msg);
                     }
                 } catch (Exception e) {
@@ -252,66 +255,65 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-
-    void setPmImg(int pmData){
-        if(pmData<=50){
+    void setPmImg(int pmData) {
+        if (pmData <= 50) {
             pmImg.setImageDrawable(getResources().getDrawable(R.drawable.biz_plugin_weather_0_50));
-        }else if(pmData>50 && pmData<=100){
+        } else if (pmData > 50 && pmData <= 100) {
             pmImg.setImageDrawable(getResources().getDrawable(R.drawable.biz_plugin_weather_51_100));
-        }else if(pmData>100 && pmData<=150){
+        } else if (pmData > 100 && pmData <= 150) {
             pmImg.setImageDrawable(getResources().getDrawable(R.drawable.biz_plugin_weather_101_150));
-        }else if(pmData>150 && pmData<=200){
+        } else if (pmData > 150 && pmData <= 200) {
             pmImg.setImageDrawable(getResources().getDrawable(R.drawable.biz_plugin_weather_151_200));
-        }else if(pmData>200 && pmData<=300){
+        } else if (pmData > 200 && pmData <= 300) {
             pmImg.setImageDrawable(getResources().getDrawable(R.drawable.biz_plugin_weather_201_300));
-        }else if(pmData>300){
+        } else if (pmData > 300) {
             pmImg.setImageDrawable(getResources().getDrawable(R.drawable.biz_plugin_weather_greater_300));
         }
     }
 
 
-    void setWeatherImg(String type){
-        if(type.equals("暴雪")){
+    void setWeatherImg(String type) {
+        if (type.equals("暴雪")) {
             weatherImg.setImageDrawable(getResources().getDrawable(R.drawable.biz_plugin_weather_baoxue));
-        }else if(type.equals("暴雨")){
+        } else if (type.equals("暴雨")) {
             weatherImg.setImageDrawable(getResources().getDrawable(R.drawable.biz_plugin_weather_baoyu));
-        }else if(type.equals("大暴雨")){
+        } else if (type.equals("大暴雨")) {
             weatherImg.setImageDrawable(getResources().getDrawable(R.drawable.biz_plugin_weather_dabaoyu));
-        }else if(type.equals("大雪")){
+        } else if (type.equals("大雪")) {
             weatherImg.setImageDrawable(getResources().getDrawable(R.drawable.biz_plugin_weather_daxue));
-        }else if(type.equals("大雨")){
+        } else if (type.equals("大雨")) {
             weatherImg.setImageDrawable(getResources().getDrawable(R.drawable.biz_plugin_weather_dayu));
-        }else if(type.equals("多云")){
+        } else if (type.equals("多云")) {
             weatherImg.setImageDrawable(getResources().getDrawable(R.drawable.biz_plugin_weather_duoyun));
-        }else if(type.equals("雷阵雨")){
+        } else if (type.equals("雷阵雨")) {
             weatherImg.setImageDrawable(getResources().getDrawable(R.drawable.biz_plugin_weather_leizhenyu));
-        }else if(type.equals("雷阵雨冰雹")){
+        } else if (type.equals("雷阵雨冰雹")) {
             weatherImg.setImageDrawable(getResources().getDrawable(R.drawable.biz_plugin_weather_leizhenyubingbao));
-        }else if(type.equals("晴")){
+        } else if (type.equals("晴")) {
             weatherImg.setImageDrawable(getResources().getDrawable(R.drawable.biz_plugin_weather_qing));
-        }else if(type.equals("沙尘暴")){
+        } else if (type.equals("沙尘暴")) {
             weatherImg.setImageDrawable(getResources().getDrawable(R.drawable.biz_plugin_weather_shachenbao));
-        }else if(type.equals("特大暴雨")){
+        } else if (type.equals("特大暴雨")) {
             weatherImg.setImageDrawable(getResources().getDrawable(R.drawable.biz_plugin_weather_tedabaoyu));
-        }else if(type.equals("雾")){
+        } else if (type.equals("雾")) {
             weatherImg.setImageDrawable(getResources().getDrawable(R.drawable.biz_plugin_weather_wu));
-        }else if(type.equals("小雪")){
+        } else if (type.equals("小雪")) {
             weatherImg.setImageDrawable(getResources().getDrawable(R.drawable.biz_plugin_weather_xiaoxue));
-        }else if(type.equals("小雨")){
+        } else if (type.equals("小雨")) {
             weatherImg.setImageDrawable(getResources().getDrawable(R.drawable.biz_plugin_weather_xiaoyu));
-        }else if(type.equals("阴")){
+        } else if (type.equals("阴")) {
             weatherImg.setImageDrawable(getResources().getDrawable(R.drawable.biz_plugin_weather_yin));
-        }else if(type.equals("雨夹雪")){
+        } else if (type.equals("雨夹雪")) {
             weatherImg.setImageDrawable(getResources().getDrawable(R.drawable.biz_plugin_weather_yujiaxue));
-        }else if(type.equals("阵雪")){
+        } else if (type.equals("阵雪")) {
             weatherImg.setImageDrawable(getResources().getDrawable(R.drawable.biz_plugin_weather_zhenxue));
-        }else if(type.equals("阵雨")){
+        } else if (type.equals("阵雨")) {
             weatherImg.setImageDrawable(getResources().getDrawable(R.drawable.biz_plugin_weather_zhenyu));
-        }else if(type.equals("中雪")){
+        } else if (type.equals("中雪")) {
             weatherImg.setImageDrawable(getResources().getDrawable(R.drawable.biz_plugin_weather_zhongxue));
-        }else if(type.equals("中雨")){
+        } else if (type.equals("中雨")) {
             weatherImg.setImageDrawable(getResources().getDrawable(R.drawable.biz_plugin_weather_zhongyu));
-        }else {
+        } else {
             weatherImg.setImageDrawable(getResources().getDrawable(R.drawable.biz_plugin_weather_qing));
         }
 
@@ -319,6 +321,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * 更新天气
+     *
      * @param todayWeather
      */
     void updateTodayWeather(TodayWeather todayWeather) {
@@ -329,9 +332,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         pmDataTv.setText(todayWeather.getPm25());
         pmQualityTv.setText(todayWeather.getQuality());
         weekTv.setText(todayWeather.getDate());
-        temperatureTv.setText(todayWeather.getHigh() + "~" + todayWeather.getLow());
+        temperatureTv.setText( todayWeather.getLow() + "~" + todayWeather.getHigh());
         climateTv.setText(todayWeather.getType());
         windTv.setText("风力:" + todayWeather.getFengli());
+        temperature_nowTv.setText("当前温度:" + todayWeather.getWendu() + "℃");
         //setPmImg(Integer.parseInt("155"));
         //setWeatherImg("多云");
         setPmImg(Integer.parseInt(todayWeather.getPm25()));
@@ -343,13 +347,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {      //设置单击事件
 
-        if(view.getId()==R.id.title_city_manager){
-            Intent i = new Intent(this,SelectCity.class);
+        if (view.getId() == R.id.title_city_manager) {
+            Intent i = new Intent(this, SelectCity.class);
             startActivity(i);
         }
 
         if (view.getId() == R.id.title_update_btn) {
-
             SharedPreferences sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
             String cityCode = sharedPreferences.getString("main_city_code", "101010100");
             Log.d("myWeather", cityCode);
