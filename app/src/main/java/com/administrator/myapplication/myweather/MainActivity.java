@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,10 +33,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int UPDATE_TODAY_WEATHER = 1;
 
     private ImageView mUpdateBtn;
+    private ProgressBar progressBar;
     private TextView cityTv, timeTv, humidityTv, weekTv, pmDataTv,
             pmQualityTv, temperatureTv, climateTv, windTv, city_name_Tv,temperature_nowTv;
     private ImageView weatherImg, pmImg;
     private ImageView mCitySelect;
+    private String cityCode;
 
 
     private Handler mHandler = new Handler() {
@@ -69,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         weatherImg = (ImageView) findViewById(R.id.weather_img);
         temperature_nowTv = (TextView) findViewById(R.id.temperature_now);
 
-
         city_name_Tv.setText("N/A");
         cityTv.setText("N/A");
         timeTv.setText("N/A");
@@ -86,22 +88,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Log.d("MyApp", "MainActivity->oncreate");
-
         setContentView(R.layout.weather_info);
 
         mUpdateBtn = (ImageView) findViewById(R.id.title_update_btn);
         mUpdateBtn.setOnClickListener(this);
+        progressBar = (ProgressBar) findViewById(R.id.title_update_progress);
         mCitySelect = (ImageView) findViewById(R.id.title_city_manager);
         mCitySelect.setOnClickListener(this);
-
 
         initView();
 
         SharedPreferences sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
-        String cityCode = sharedPreferences.getString("main_city_code", "101010100");
+        cityCode = sharedPreferences.getString("main_city_code", "101010100");
         Log.d("myWeather", cityCode);
+
+        startService(new Intent(getBaseContext(), MyService.class));
 
         if (NetUtil.getNetworkState(this) != NetUtil.NETWORK_NONE) {
             Log.d("myweather", "网络正常");
@@ -210,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      *
      * @param cityCode
      */
-    private void queryWeatherCode(String cityCode) {
+    private  void queryWeatherCode(String cityCode) {
         final String address = "http://wthrcdn.etouch.cn/WeatherApi?citykey=" + cityCode;
         Log.d("myWeather", address);
         new Thread(new Runnable() {
@@ -341,20 +343,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setPmImg(Integer.parseInt(todayWeather.getPm25()));
         setWeatherImg(todayWeather.getType());
         Toast.makeText(MainActivity.this, "更新成功！", Toast.LENGTH_SHORT).show();
+        progressBar.setVisibility(View.GONE);
+        mUpdateBtn.setVisibility(View.VISIBLE);
     }
 
+
+    protected void onActivityResult(int RequestCode,int ResultCode,Intent data){
+        if(RequestCode == 1 && ResultCode == RESULT_OK){
+            cityCode = data.getStringExtra("Number");
+            if (NetUtil.getNetworkState(this) != NetUtil.NETWORK_NONE) {
+                Log.d("myWeather", "网络OK");
+                queryWeatherCode(cityCode);
+            } else {
+                Log.d("myWeather", "网络挂了");
+                Toast.makeText(MainActivity.this, "网络挂了！", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 
     @Override
     public void onClick(View view) {      //设置单击事件
 
         if (view.getId() == R.id.title_city_manager) {
             Intent i = new Intent(this, SelectCity.class);
-            startActivity(i);
+            //startActivity(i);
+            startActivityForResult(i,1);
         }
 
         if (view.getId() == R.id.title_update_btn) {
-            SharedPreferences sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
-            String cityCode = sharedPreferences.getString("main_city_code", "101010100");
+            mUpdateBtn.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+
             Log.d("myWeather", cityCode);
 
             if (NetUtil.getNetworkState(this) != NetUtil.NETWORK_NONE) {

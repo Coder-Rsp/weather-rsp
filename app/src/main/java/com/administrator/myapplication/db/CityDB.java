@@ -19,12 +19,12 @@ import java.util.List;
  */
 public class CityDB {
 
-    public static final String CITY_DB_NAME = "city2.db";
+    public static final String CITY_DB_NAME = "city.db";
     public static final String CITY_TABLE_NAME = "city";
     private SQLiteDatabase db;
 
     public CityDB(Context context, String path) {
-        db = context.openOrCreateDatabase(CITY_DB_NAME, Context.MODE_PRIVATE, null);
+        db = context.openOrCreateDatabase(path, Context.MODE_PRIVATE, null);
     }
 
     public List<City> getAllCity() {
@@ -43,43 +43,4 @@ public class CityDB {
         }
         return list;
     }
-/*
-
-
-    private CityDB openCityDB() {
-        String path = "/data"
-                + Environment.getDataDirectory().getAbsolutePath()
-                + File.separator + getPackageName()
-                + File.separator + "databases"
-                + File.separator
-                + CityDB.CITY_DB_NAME;
-        File db = new File(path);
-        Log.d("MyApp", path);
-
-        if (!db.exists()) {
-            Log.i("MyApp", "数据库不存在");
-
-            try {
-                InputStream is = getAssets().open("city.db");
-                FileOutputStream fos = new FileOutputStream(db);
-                int len = -1;
-                byte[] buffer = new byte[1024];
-                while ((len = is.read(buffer)) != -1) {
-                    fos.write(buffer, 0, len);
-                    fos.flush();
-                }
-                fos.close();
-                is.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.exit(0);
-            }
-            return new CityDB(this, path);
-        }
-
-
-    }
-*/
-
-
 }
